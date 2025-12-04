@@ -1,66 +1,143 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎯 Project: Laravel11-social-google
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## ✅ Overview
+This project demonstrates how to implement authentication in Laravel 11 using:
 
-## About Laravel
+1. **Google OAuth Login (Social Login)** via Laravel Socialite  
+2. **Normal Email/Password Login** (Register, Login, Dashboard, Logout)  
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+It allows users to login/register using either traditional credentials or Google account.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🛠️ Project Setup & Configuration
 
-## Learning Laravel
+### 🔧 Step 1: Create a New Laravel 11 Project
+```bash
+composer create-project laravel/laravel:^11.0 laravel11-social-google
+cd laravel11-social-google
+cp .env.example .env
+php artisan key:generate
+🗄 Step 2: Configure Database
+Open .env and update:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+makefile
+Copy code
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel11_social
+DB_USERNAME=root
+DB_PASSWORD=
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+# Charset & Collation for emojis / unicode
+DB_CHARSET=utf8mb4
+DB_COLLATION=utf8mb4_unicode_ci
+Then create the database laravel11_social in MySQL.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+🧩 Step 3: Install Laravel Socialite
 
-## Laravel Sponsors
+composer require laravel/socialite
+🧱 Step 4: Update Users Table
+Add google_id column for Google OAuth:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-### Premium Partners
+php artisan make:migration add_google_id_to_users_table --table=users
+php artisan migrate
+👨‍💻 Step 5: Update User Model
+Add google_id to $fillable
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Add $hidden fields
 
-## Contributing
+Ensure password hashing (hashed)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Location: app/Models/User.php
 
-## Code of Conduct
+🔐 Step 6: Setup Google OAuth Credentials
+Go to Google Cloud Console
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+APIs & Services → Credentials → Create Credentials → OAuth Client ID
 
-## Security Vulnerabilities
+Application Type: Web Application
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Add redirect URL:
+http://localhost:8000/login/google/callback
+Copy Client ID and Client Secret.
 
-## License
+🧾 Step 7: Add Google Keys in .env
+ini
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+GOOGLE_CLIENT_ID=your_client_id_here
+GOOGLE_CLIENT_SECRET=your_secret_here
+GOOGLE_REDIRECT=http://localhost:8000/login/google/callback
+Update config/services.php:
+
+php
+Copy code
+'google' => [
+    'client_id' => env('GOOGLE_CLIENT_ID'),
+    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+    'redirect' => env('GOOGLE_REDIRECT'),
+],
+
+🧱 Step 8: Create Controllers
+AuthController – handles email/password login & registration
+
+php artisan make:controller Auth/AuthController
+SocialController – handles Google OAuth login
+
+php artisan make:controller Auth/SocialController
+
+🛣 Step 9: Define Routes
+File: routes/web.php
+
+Normal Auth: /register, /login, /dashboard, /logout
+
+Google OAuth: /login/google, /login/google/callback
+
+🎨 Step 10: Create Views
+Folder: resources/views/auth/
+
+register.blade.php – Registration form
+
+login.blade.php – Login form with Google login button
+
+dashboard.blade.php – User Dashboard
+
+(Use Tailwind CSS for modern, responsive UI.)
+
+🧪 Step 11: Run the Project
+
+php artisan serve
+Open in browser: http://localhost:8000
+
+/login → Login page
+
+/register → Registration page
+
+/dashboard → Dashboard (after login)
+
+/login/google → Redirect to Google login
+
+🧑‍💻 Application Code Structure
+app/
+  └── Http/
+       └── Controllers/
+            └── Auth/
+                 ├── AuthController.php       # Email/Password Login/Register
+                 └── SocialController.php     # Google OAuth Login
+database/
+  └── migrations/                        # users table & google_id migration
+resources/
+  └── views/
+       └── auth/
+           ├── login.blade.php
+           ├── register.blade.php
+           └── dashboard.blade.php
+routes/
+  └── web.php
+.env
+
+🎉 Project Complete
+You now have a Laravel 11 project supporting both normal email/password authentication and Google social login.
+Users can register/login via standard credentials or Google, and access a protected dashboard.
