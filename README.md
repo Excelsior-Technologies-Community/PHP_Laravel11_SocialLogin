@@ -81,8 +81,9 @@ composer require laravel/socialite
 🧱 Step 5: Update Users Table (Google ID)
 If users table already exists, add google_id:
 ```
-```
 php artisan make:migration add_google_id_to_users_table --table=users
+
+```
 Migration Code
 ```
 php
