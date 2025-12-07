@@ -197,9 +197,9 @@ http://localhost:8000/login/google/callback
 Client ID
 
 Client Secret
-```
+
 🧾 Step 8: Add Google Keys in .env
-env
+
 ```
 
 GOOGLE_CLIENT_ID=your_client_id_here
@@ -208,6 +208,7 @@ GOOGLE_REDIRECT=http://localhost:8000/login/google/callback
 
 ```
 ⚙ Step 9: Update config/services.php
+
 ```
 
 'google' => [
@@ -223,7 +224,7 @@ Create controller:
 ```
 
 php artisan make:controller Auth/AuthController
-```
+
 ```
 📁 app/Http/Controllers/Auth/AuthController.php
 ```
