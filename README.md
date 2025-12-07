@@ -417,10 +417,7 @@ class SocialController extends Controller
 
 ```
 🛣 Step 11: Routes
-```
-```
-
-```
+```bash
 ```
 📁 routes/web.php
 ```
