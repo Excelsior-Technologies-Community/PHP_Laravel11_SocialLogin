@@ -417,6 +417,8 @@ class SocialController extends Controller
 
 ```
 🛣 Step 11: Routes
+```
+```
 📁 routes/web.php
 ```
 <?php
@@ -453,6 +455,8 @@ Route::get('login/google/callback', [SocialController::class, 'handleGoogleCallb
 
 ```
 🎨 Step 12: Views (Tailwind CSS)
+```
+```
 📁 resources/views/auth/
 ```
 ```
