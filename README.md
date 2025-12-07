@@ -47,9 +47,14 @@ DB_USERNAME=root
 DB_PASSWORD=
 
 ```
+```
 # Charset & Collation (important for emojis, unicode, Google names)
+```
+```
 DB_CHARSET=utf8mb4
 DB_COLLATION=utf8mb4_unicode_ci
+```
+
 📌 Why utf8mb4?
 Supports emojis
 
