@@ -127,12 +127,9 @@ php artisan migrate
 📌 google_id stores the unique ID provided by Google OAuth.
 
 👨‍💻 Step 6: Update User Model
+📁 Location: app/Models/User.php
 ```
 
-📁 Location: app/Models/User.php
-
-php
-Copy code
 <?php
 
 namespace App\Models;
@@ -183,6 +180,7 @@ Visit:
 
 👉 https://console.cloud.google.com/
 
+```
 Steps:
 
 APIs & Services → Credentials
@@ -192,11 +190,9 @@ Create Credentials → OAuth Client ID
 Application Type → Web Application
 
 Add Redirect URL:
-
-text
-Copy code
+```
 http://localhost:8000/login/google/callback
-Copy:
+```
 
 Client ID
 
@@ -204,7 +200,6 @@ Client Secret
 ```
 🧾 Step 8: Add Google Keys in .env
 env
-Copy code
 ```
 
 GOOGLE_CLIENT_ID=your_client_id_here
@@ -214,8 +209,6 @@ GOOGLE_REDIRECT=http://localhost:8000/login/google/callback
 ```
 ⚙ Step 9: Update config/services.php
 ```
-php
-Copy code
 
 'google' => [
     'client_id'     => env('GOOGLE_CLIENT_ID'),
@@ -229,14 +222,10 @@ Copy code
 Create controller:
 ```
 
-bash
-Copy code
 php artisan make:controller Auth/AuthController
-
+```
 ```
 📁 app/Http/Controllers/Auth/AuthController.php
-php
-Copy code
 ```
 
 <?php
@@ -353,16 +342,12 @@ class AuthController extends Controller
 ```
 🌐 SocialController (Google Login)
 Create controller:
-
-bash
-Copy code
 ```
 php artisan make:controller Auth/SocialController
 
 ```
 📁 app/Http/Controllers/Auth/SocialController.php
-php
-Copy code
+
 ```
 <?php
 
@@ -433,8 +418,6 @@ class SocialController extends Controller
 🛣 Step 11: Routes
 📁 routes/web.php
 ```
-php
-Copy code
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -705,23 +688,17 @@ dashboard.blade.php
 
 ```
 🧪 Step 13: Run the Project
-bash
-Copy code
 ```
 php artisan serve
 ```
-```
 Open in browser:
 ```
-bash
-Copy code
+
 http://localhost:8000/login
-```
 ```
 🧑‍💻 Application Code Structure
 ```
-text
-Copy code
+
 app/
  └── Http/
      └── Controllers/
