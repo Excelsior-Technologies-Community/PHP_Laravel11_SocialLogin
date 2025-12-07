@@ -81,11 +81,10 @@ composer require laravel/socialite
 🧱 Step 5: Update Users Table (Google ID)
 If users table already exists, add google_id:
 ```
-
-bash
-Copy code
+```
 php artisan make:migration add_google_id_to_users_table --table=users
 Migration Code
+```
 php
 Copy code
 <?php
@@ -121,13 +120,11 @@ return new class extends Migration
 ```
 Run migration:
 ```
-bash
-Copy code
 php artisan migrate
+
 ```
 📌 google_id stores the unique ID provided by Google OAuth.
-```
-```
+
 👨‍💻 Step 6: Update User Model
 ```
 
