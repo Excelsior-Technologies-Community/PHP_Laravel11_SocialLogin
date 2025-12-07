@@ -47,9 +47,9 @@ DB_USERNAME=root
 DB_PASSWORD=
 
 ```
-```
+
 # Charset & Collation (important for emojis, unicode, Google names)
-```
+
 ```
 DB_CHARSET=utf8mb4
 DB_COLLATION=utf8mb4_unicode_ci
@@ -63,15 +63,15 @@ Supports Unicode
 Required for Google profile names
 
 Prevents character corruption
-```
 
-```
+
 🗃 Step 3: Create Database
 Create a database in phpMyAdmin or MySQL CLI:
-```
-CREATE DATABASE laravel11_social;
 
 ```
+CREATE DATABASE laravel11_social;
+```
+
 🧩 Step 4: Install Laravel Socialite
 ```
 composer require laravel/socialite
