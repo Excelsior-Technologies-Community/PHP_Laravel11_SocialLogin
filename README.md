@@ -454,11 +454,9 @@ Route::get('login/google/callback', [SocialController::class, 'handleGoogleCallb
 
 ```
 🎨 Step 12: Views (Tailwind CSS)
-```
-```
+
 📁 resources/views/auth/
-```
-```
+
 register.blade.php
 ```
 <!DOCTYPE html>
