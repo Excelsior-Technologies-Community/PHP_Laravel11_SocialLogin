@@ -419,7 +419,7 @@ class SocialController extends Controller
 🛣 Step 11: Routes
 
 📁 routes/web.php
-```bash
+```
 <?php
 
 use Illuminate\Support\Facades\Route;
