@@ -686,9 +686,8 @@ dashboard.blade.php
 ✅ Clean UI
 ✅ Validation messages
 ✅ Google Login button
-```
 
-```
+
 🧪 Step 13: Run the Project
 ```
 php artisan serve
