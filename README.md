@@ -1,5 +1,19 @@
 # 🎯 Laravel 11 – Social Login with Google (OAuth)
 
+This project demonstrates authentication in Laravel 11 using both traditional email/password login and Google Social Login (OAuth) powered by Laravel Socialite.
+
+The goal of this project is to show how modern authentication systems are implemented in real-world Laravel applications. Users can register using their email, log in with credentials, or authenticate quickly using their Google account. Once authenticated, users are redirected to a protected dashboard and can securely log out of the application.
+
+This project follows Laravel best practices and uses:
+
+Clean controller-based authentication logic
+
+Secure session handling
+
+Google OAuth 2.0 integration
+
+Simple and responsive UI built with Tailwind CSS
+
 ## ✅ Overview
 
 This project demonstrates **authentication in Laravel 11** using:
