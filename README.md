@@ -53,8 +53,8 @@ This project is suitable for:
 Run the following commands:
 
 ```bash
-composer create-project laravel/laravel:^11.0 laravel11-social-google
-cd laravel11-social-google
+composer create-project laravel/laravel:^11.0 PHP_Laravel12_SocialLogin
+cd PHP_Laravel12_SocialLogin
 cp .env.example .env
 php artisan key:generate
 
