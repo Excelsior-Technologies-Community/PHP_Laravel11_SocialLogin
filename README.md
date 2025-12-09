@@ -1,4 +1,4 @@
-# 🎯 PHP_Laravel12_SocialLogin
+# 🎯 PHP_Laravel11_SocialLogin
 
 This project demonstrates how to implement Google Social Login (OAuth 2.0) in a Laravel 11 application using Laravel Socialite, following real-world authentication practices.
 
@@ -53,8 +53,8 @@ This project is suitable for:
 Run the following commands:
 
 ```bash
-composer create-project laravel/laravel:^11.0 PHP_Laravel12_SocialLogin
-cd PHP_Laravel12_SocialLogin
+composer create-project laravel/laravel:^11.0 PHP_Laravel11_SocialLogin
+cd PHP_Laravel11_SocialLogin
 cp .env.example .env
 php artisan key:generate
 
