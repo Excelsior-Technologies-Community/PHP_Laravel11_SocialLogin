@@ -8,15 +8,21 @@ In addition to Google OAuth authentication, the project also includes a traditio
 
 Once authenticated (via Google or credentials), users are redirected to a secured dashboard, and full session management with a safe logout mechanism is implemented.
 
-This project follows Laravel best practices and uses:
+✅ Key Highlights
 
-Clean controller-based authentication logic
+🔐 Google OAuth 2.0 Authentication using Laravel Socialite (Primary Focus)
 
-Secure session handling
+⚡ One-click sign-in with Google account
 
-Google OAuth 2.0 integration
+🧩 Seamless integration with Laravel’s authentication system
 
-Simple and responsive UI built with Tailwind CSS
+🛡️ Secure session handling and logout
+
+🎨 Clean, responsive UI built with Tailwind CSS
+
+🏗️ Controller-based, clean, and scalable code structure
+
+This project reflects how modern Laravel applications implement social authentication for better user experience, security, and faster onboarding.
 
 ## ✅ Overview
 
