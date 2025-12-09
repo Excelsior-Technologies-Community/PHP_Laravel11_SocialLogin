@@ -724,7 +724,7 @@ http://localhost:8000/login
 ```
 🧑‍💻 Application Code Structure
 ```
-
+PHP_Laravel11_SocialLogin/
 app/
  └── Http/
      └── Controllers/
