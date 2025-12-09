@@ -1,4 +1,4 @@
-# 🎯 Laravel 11 – Social Login with Google (OAuth)
+# 🎯 PHP_Laravel12_SocialLogin
 
 This project demonstrates how to implement Google Social Login (OAuth 2.0) in a Laravel 11 application using Laravel Socialite, following real-world authentication practices.
 
