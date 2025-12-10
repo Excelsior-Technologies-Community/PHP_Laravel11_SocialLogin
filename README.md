@@ -1,4 +1,4 @@
-# 🎯 PHP_Laravel11_SocialLogin
+#  PHP_Laravel11_SocialLogin
 
 This project demonstrates how to implement Google Social Login (OAuth 2.0) in a Laravel 11 application using Laravel Socialite, following real-world authentication practices.
 
@@ -8,23 +8,23 @@ In addition to Google OAuth authentication, the project also includes a traditio
 
 Once authenticated (via Google or credentials), users are redirected to a secured dashboard, and full session management with a safe logout mechanism is implemented.
 
-✅ Key Highlights
+ Key Highlights
 
-🔐 Google OAuth 2.0 Authentication using Laravel Socialite (Primary Focus)
+ Google OAuth 2.0 Authentication using Laravel Socialite (Primary Focus)
 
-⚡ One-click sign-in with Google account
+ One-click sign-in with Google account
 
-🧩 Seamless integration with Laravel’s authentication system
+ Seamless integration with Laravel’s authentication system
 
-🛡️ Secure session handling and logout
+ Secure session handling and logout
 
-🎨 Clean, responsive UI built with Tailwind CSS
+ Clean, responsive UI built with Tailwind CSS
 
-🏗️ Controller-based, clean, and scalable code structure
+ Controller-based, clean, and scalable code structure
 
 This project reflects how modern Laravel applications implement social authentication for better user experience, security, and faster onboarding.
 
-## ✅ Overview
+##  Overview
 
 This project demonstrates **authentication in Laravel 11** using:
 
@@ -97,13 +97,13 @@ Create a database in phpMyAdmin or MySQL CLI:
 CREATE DATABASE laravel11_social;
 ```
 
-🧩 Step 4: Install Laravel Socialite
+ Step 4: Install Laravel Socialite
 ```
 composer require laravel/socialite
 ```
-✅ Laravel Socialite is Laravel’s official package for OAuth authentication.
+ Laravel Socialite is Laravel’s official package for OAuth authentication.
 
-🧱 Step 5: Update Users Table (Google ID)
+ Step 5: Update Users Table (Google ID)
 If users table already exists, add google_id:
 ```
 php artisan make:migration add_google_id_to_users_table --table=users
@@ -151,8 +151,9 @@ php artisan migrate
 ```
 📌 google_id stores the unique ID provided by Google OAuth.
 
-👨‍💻 Step 6: Update User Model
-📁 Location: app/Models/User.php
+ Step 6: Update User Model
+ 
+ Location: app/Models/User.php
 ```
 
 <?php
@@ -198,12 +199,12 @@ class User extends Authenticatable
 }
 
 ```
-🔐 Step 7: Setup Google OAuth Credentials
+ Step 7: Setup Google OAuth Credentials
 ```
 
 Visit:
 
-👉 https://console.cloud.google.com/
+ https://console.cloud.google.com/
 
 ```
 Steps:
@@ -223,7 +224,7 @@ Client ID
 
 Client Secret
 
-🧾 Step 8: Add Google Keys in .env
+ Step 8: Add Google Keys in .env
 
 ```
 
@@ -232,7 +233,7 @@ GOOGLE_CLIENT_SECRET=your_client_secret_here
 GOOGLE_REDIRECT=http://localhost:8000/login/google/callback
 
 ```
-⚙ Step 9: Update config/services.php
+ Step 9: Update config/services.php
 
 ```
 
@@ -243,15 +244,17 @@ GOOGLE_REDIRECT=http://localhost:8000/login/google/callback
 ],
 
 ```
-🧱 Step 10: Controllers
-🔐 AuthController (Normal Login & Register)
+ Step 10: Controllers
+ 
+ AuthController (Normal Login & Register)
+ 
 Create controller:
 ```
 
 php artisan make:controller Auth/AuthController
 
 ```
-📁 app/Http/Controllers/Auth/AuthController.php
+ app/Http/Controllers/Auth/AuthController.php
 ```
 
 <?php
@@ -366,13 +369,14 @@ class AuthController extends Controller
 }
 
 ```
-🌐 SocialController (Google Login)
+ SocialController (Google Login)
+ 
 Create controller:
 ```
 php artisan make:controller Auth/SocialController
 
 ```
-📁 app/Http/Controllers/Auth/SocialController.php
+ app/Http/Controllers/Auth/SocialController.php
 
 ```
 <?php
@@ -441,9 +445,9 @@ class SocialController extends Controller
 }
 
 ```
-🛣 Step 11: Routes
+ Step 11: Routes
 
-📁 routes/web.php
+ routes/web.php
 ```
 <?php
 
@@ -478,9 +482,9 @@ Route::get('login/google', [SocialController::class, 'redirectToGoogle'])->name(
 Route::get('login/google/callback', [SocialController::class, 'handleGoogleCallback'])->name('google.callback');
 
 ```
-🎨 Step 12: Views (Tailwind CSS)
+ Step 12: Views (Tailwind CSS)
 
-📁 resources/views/auth/
+ resources/views/auth/
 
 register.blade.php
 ```
@@ -708,12 +712,12 @@ dashboard.blade.php
 </html>
 
 ```
-✅ Clean UI
-✅ Validation messages
-✅ Google Login button
+ Clean UI
+ Validation messages
+ Google Login button
 
 
-🧪 Step 13: Run the Project
+Step 13: Run the Project
 ```
 php artisan serve
 ```
@@ -722,7 +726,7 @@ Open in browser:
 
 http://localhost:8000/login
 ```
-🧑‍💻 Application Code Structure
+ Application Code Structure
 ```
 PHP_Laravel11_SocialLogin/
 app/
@@ -748,8 +752,9 @@ routes/
 .env
 ```
 🎉 Project Status
-✅ Fully Functional
-✅ Laravel 11 Ready
-✅ Google OAuth Integrated
+
+ Fully Functional
+ Laravel 11 Ready
+ Google OAuth Integrated
 
 🎉 Your Laravel 11 Social Login with Google Project is Successfully Ready!
