@@ -753,10 +753,5 @@ routes/
 
 .env
 ```
-🎉 Project Status
 
- Fully Functional
- Laravel 11 Ready
- Google OAuth Integrated
-
-🎉 Your Laravel 11 Social Login with Google Project is Successfully Ready!
+Your Laravel 11 Social Login with Google Project is Successfully Ready!
