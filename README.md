@@ -28,9 +28,9 @@ This project reflects how modern Laravel applications implement social authentic
 
 This project demonstrates **authentication in Laravel 11** using:
 
-1️⃣ **Google OAuth (Social Login)** via Laravel Socialite  
+1️ **Google OAuth (Social Login)** via Laravel Socialite  
 
-2️⃣ **Normal Email & Password Authentication**  
+2️ **Normal Email & Password Authentication**  
    - Register  
    - Login  
    - Dashboard  
@@ -44,11 +44,11 @@ This project is suitable for:
 
 ---
 
-## 🛠️ Project Setup & Configuration
+##  Project Setup & Configuration
 
 ---
 
-## 🔧 Step 1: Create a New Laravel 11 Project
+##  Step 1: Create a New Laravel 11 Project
 
 Run the following commands:
 
@@ -80,7 +80,7 @@ DB_CHARSET=utf8mb4
 DB_COLLATION=utf8mb4_unicode_ci
 ```
 
-📌 Why utf8mb4?
+Why utf8mb4?
 Supports emojis
 
 Supports Unicode
@@ -90,8 +90,9 @@ Required for Google profile names
 Prevents character corruption
 
 
-🗃 Step 3: Create Database
-Create a database in phpMyAdmin or MySQL CLI:
+ Step 3: Create Database
+ 
+ Create a database in phpMyAdmin or MySQL CLI:
 
 ```
 CREATE DATABASE laravel11_social;
@@ -149,7 +150,7 @@ Run migration:
 php artisan migrate
 
 ```
-📌 google_id stores the unique ID provided by Google OAuth.
+ google_id stores the unique ID provided by Google OAuth.
 
  Step 6: Update User Model
  
