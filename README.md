@@ -59,7 +59,8 @@ cp .env.example .env
 php artisan key:generate
 
 ```
-🗄 Step 2: Configure Database in .env
+ Step 2: Configure Database in .env
+ 
 Update your database configuration:
 env
 ```
