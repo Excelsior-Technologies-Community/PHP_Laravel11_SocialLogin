@@ -753,5 +753,23 @@ routes/
 
 .env
 ```
+## Output:
+
+### User Registration
+
+<img width="1919" height="1088" alt="Screenshot 2025-12-12 123246" src="https://github.com/user-attachments/assets/7d6bbf2e-2bf3-4623-a703-1bb6a2c49dee" />
+
+### User Login
+
+<img width="1911" height="1086" alt="Screenshot 2025-12-04 111648" src="https://github.com/user-attachments/assets/3d0569df-7f23-49ea-adf1-2a9e08eead22" />
+
+### Sign in With Google
+
+<img width="1918" height="1034" alt="Screenshot 2025-12-04 111840" src="https://github.com/user-attachments/assets/ddf4affe-dbbe-4d7c-9d7e-264d28e31651" />
+
+### User Dashboard
+
+<img width="1916" height="1083" alt="Screenshot 2025-12-04 111854" src="https://github.com/user-attachments/assets/1f498c47-79a6-47f7-b5cf-8c8d9884b933" />
+
 
 Your Laravel 11 Social Login with Google Project is Successfully Ready!
