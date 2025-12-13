@@ -1,28 +1,28 @@
 #  PHP_Laravel11_SocialLogin
 
-This project demonstrates how to implement Google Social Login (OAuth 2.0) in a Laravel 11 application using Laravel Socialite, following real-world authentication practices.
+- This project demonstrates how to implement Google Social Login (OAuth 2.0) in a Laravel 11 application using Laravel Socialite, following real-world authentication practices.
 
-The primary goal of this project is to showcase how modern applications allow users to authenticate securely using their Google account, eliminating the need to create and remember separate passwords. With a single click, users can sign in via Google and gain instant access to a protected dashboard.
+- The primary goal of this project is to showcase how modern applications allow users to authenticate securely using their Google account, eliminating the need to create and remember separate passwords. With a single click, users can sign in via Google and gain instant access to a protected dashboard.
 
-In addition to Google OAuth authentication, the project also includes a traditional email/password login system to illustrate how social login can seamlessly coexist with standard authentication in Laravel.
+- In addition to Google OAuth authentication, the project also includes a traditional email/password login system to illustrate how social login can seamlessly coexist with standard authentication in Laravel.
 
-Once authenticated (via Google or credentials), users are redirected to a secured dashboard, and full session management with a safe logout mechanism is implemented.
+- Once authenticated (via Google or credentials), users are redirected to a secured dashboard, and full session management with a safe logout mechanism is implemented.
 
- Key Highlights
+# Key Highlights
 
- Google OAuth 2.0 Authentication using Laravel Socialite (Primary Focus)
+ - Google OAuth 2.0 Authentication using Laravel Socialite (Primary Focus)
 
- One-click sign-in with Google account
+ - One-click sign-in with Google account
 
- Seamless integration with Laravel’s authentication system
+ - Seamless integration with Laravel’s authentication system
 
- Secure session handling and logout
+ - Secure session handling and logout
 
- Clean, responsive UI built with Tailwind CSS
+ - Clean, responsive UI built with Tailwind CSS
 
- Controller-based, clean, and scalable code structure
+ - Controller-based, clean, and scalable code structure
 
-This project reflects how modern Laravel applications implement social authentication for better user experience, security, and faster onboarding.
+- This project reflects how modern Laravel applications implement social authentication for better user experience, security, and faster onboarding.
 
 ##  Overview
 
@@ -771,5 +771,6 @@ routes/
 
 <img width="1916" height="1083" alt="Screenshot 2025-12-04 111854" src="https://github.com/user-attachments/assets/1f498c47-79a6-47f7-b5cf-8c8d9884b933" />
 
+---
 
-Your Laravel 11 Social Login with Google Project is Successfully Ready!
+Your PHP_Laravel11_SocialLogin Project is Successfully Ready!
