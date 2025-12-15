@@ -1,36 +1,36 @@
-# 🎯 PHP_Laravel11_SocialLogin
+#  PHP_Laravel11_SocialLogin
 
-This project demonstrates how to implement Google Social Login (OAuth 2.0) in a Laravel 11 application using Laravel Socialite, following real-world authentication practices.
+- This project demonstrates how to implement Google Social Login (OAuth 2.0) in a Laravel 11 application using Laravel Socialite, following real-world authentication practices.
 
-The primary goal of this project is to showcase how modern applications allow users to authenticate securely using their Google account, eliminating the need to create and remember separate passwords. With a single click, users can sign in via Google and gain instant access to a protected dashboard.
+- The primary goal of this project is to showcase how modern applications allow users to authenticate securely using their Google account, eliminating the need to create and remember separate passwords. With a single click, users can sign in via Google and gain instant access to a protected dashboard.
 
-In addition to Google OAuth authentication, the project also includes a traditional email/password login system to illustrate how social login can seamlessly coexist with standard authentication in Laravel.
+- In addition to Google OAuth authentication, the project also includes a traditional email/password login system to illustrate how social login can seamlessly coexist with standard authentication in Laravel.
 
-Once authenticated (via Google or credentials), users are redirected to a secured dashboard, and full session management with a safe logout mechanism is implemented.
+- Once authenticated (via Google or credentials), users are redirected to a secured dashboard, and full session management with a safe logout mechanism is implemented.
 
-✅ Key Highlights
+# Key Highlights
 
-🔐 Google OAuth 2.0 Authentication using Laravel Socialite (Primary Focus)
+ - Google OAuth 2.0 Authentication using Laravel Socialite (Primary Focus)
 
-⚡ One-click sign-in with Google account
+ - One-click sign-in with Google account
 
-🧩 Seamless integration with Laravel’s authentication system
+ - Seamless integration with Laravel’s authentication system
 
-🛡️ Secure session handling and logout
+ - Secure session handling and logout
 
-🎨 Clean, responsive UI built with Tailwind CSS
+ - Clean, responsive UI built with Tailwind CSS
 
-🏗️ Controller-based, clean, and scalable code structure
+ - Controller-based, clean, and scalable code structure
 
-This project reflects how modern Laravel applications implement social authentication for better user experience, security, and faster onboarding.
+- This project reflects how modern Laravel applications implement social authentication for better user experience, security, and faster onboarding.
 
-## ✅ Overview
+##  Overview
 
 This project demonstrates **authentication in Laravel 11** using:
 
-1️⃣ **Google OAuth (Social Login)** via Laravel Socialite  
+1️ **Google OAuth (Social Login)** via Laravel Socialite  
 
-2️⃣ **Normal Email & Password Authentication**  
+2️ **Normal Email & Password Authentication**  
    - Register  
    - Login  
    - Dashboard  
@@ -44,11 +44,11 @@ This project is suitable for:
 
 ---
 
-## 🛠️ Project Setup & Configuration
+##  Project Setup & Configuration
 
 ---
 
-## 🔧 Step 1: Create a New Laravel 11 Project
+##  Step 1: Create a New Laravel 11 Project
 
 Run the following commands:
 
@@ -59,7 +59,8 @@ cp .env.example .env
 php artisan key:generate
 
 ```
-🗄 Step 2: Configure Database in .env
+ Step 2: Configure Database in .env
+ 
 Update your database configuration:
 env
 ```
@@ -80,7 +81,7 @@ DB_CHARSET=utf8mb4
 DB_COLLATION=utf8mb4_unicode_ci
 ```
 
-📌 Why utf8mb4?
+Why utf8mb4?
 Supports emojis
 
 Supports Unicode
@@ -90,20 +91,21 @@ Required for Google profile names
 Prevents character corruption
 
 
-🗃 Step 3: Create Database
-Create a database in phpMyAdmin or MySQL CLI:
+ Step 3: Create Database
+ 
+ Create a database in phpMyAdmin or MySQL CLI:
 
 ```
 CREATE DATABASE laravel11_social;
 ```
 
-🧩 Step 4: Install Laravel Socialite
+ Step 4: Install Laravel Socialite
 ```
 composer require laravel/socialite
 ```
-✅ Laravel Socialite is Laravel’s official package for OAuth authentication.
+ Laravel Socialite is Laravel’s official package for OAuth authentication.
 
-🧱 Step 5: Update Users Table (Google ID)
+ Step 5: Update Users Table (Google ID)
 If users table already exists, add google_id:
 ```
 php artisan make:migration add_google_id_to_users_table --table=users
@@ -149,10 +151,11 @@ Run migration:
 php artisan migrate
 
 ```
-📌 google_id stores the unique ID provided by Google OAuth.
+ google_id stores the unique ID provided by Google OAuth.
 
-👨‍💻 Step 6: Update User Model
-📁 Location: app/Models/User.php
+ Step 6: Update User Model
+ 
+ Location: app/Models/User.php
 ```
 
 <?php
@@ -198,12 +201,12 @@ class User extends Authenticatable
 }
 
 ```
-🔐 Step 7: Setup Google OAuth Credentials
+ Step 7: Setup Google OAuth Credentials
 ```
 
 Visit:
 
-👉 https://console.cloud.google.com/
+ https://console.cloud.google.com/
 
 ```
 Steps:
@@ -223,7 +226,7 @@ Client ID
 
 Client Secret
 
-🧾 Step 8: Add Google Keys in .env
+ Step 8: Add Google Keys in .env
 
 ```
 
@@ -232,7 +235,7 @@ GOOGLE_CLIENT_SECRET=your_client_secret_here
 GOOGLE_REDIRECT=http://localhost:8000/login/google/callback
 
 ```
-⚙ Step 9: Update config/services.php
+ Step 9: Update config/services.php
 
 ```
 
@@ -243,15 +246,17 @@ GOOGLE_REDIRECT=http://localhost:8000/login/google/callback
 ],
 
 ```
-🧱 Step 10: Controllers
-🔐 AuthController (Normal Login & Register)
+ Step 10: Controllers
+ 
+ AuthController (Normal Login & Register)
+ 
 Create controller:
 ```
 
 php artisan make:controller Auth/AuthController
 
 ```
-📁 app/Http/Controllers/Auth/AuthController.php
+ app/Http/Controllers/Auth/AuthController.php
 ```
 
 <?php
@@ -366,13 +371,14 @@ class AuthController extends Controller
 }
 
 ```
-🌐 SocialController (Google Login)
+ SocialController (Google Login)
+ 
 Create controller:
 ```
 php artisan make:controller Auth/SocialController
 
 ```
-📁 app/Http/Controllers/Auth/SocialController.php
+ app/Http/Controllers/Auth/SocialController.php
 
 ```
 <?php
@@ -441,9 +447,9 @@ class SocialController extends Controller
 }
 
 ```
-🛣 Step 11: Routes
+ Step 11: Routes
 
-📁 routes/web.php
+ routes/web.php
 ```
 <?php
 
@@ -478,9 +484,9 @@ Route::get('login/google', [SocialController::class, 'redirectToGoogle'])->name(
 Route::get('login/google/callback', [SocialController::class, 'handleGoogleCallback'])->name('google.callback');
 
 ```
-🎨 Step 12: Views (Tailwind CSS)
+ Step 12: Views (Tailwind CSS)
 
-📁 resources/views/auth/
+ resources/views/auth/
 
 register.blade.php
 ```
@@ -708,12 +714,12 @@ dashboard.blade.php
 </html>
 
 ```
-✅ Clean UI
-✅ Validation messages
-✅ Google Login button
+ Clean UI
+ Validation messages
+ Google Login button
 
 
-🧪 Step 13: Run the Project
+Step 13: Run the Project
 ```
 php artisan serve
 ```
@@ -722,7 +728,7 @@ Open in browser:
 
 http://localhost:8000/login
 ```
-🧑‍💻 Application Code Structure
+ Application Code Structure
 ```
 PHP_Laravel11_SocialLogin/
 app/
@@ -747,9 +753,24 @@ routes/
 
 .env
 ```
-🎉 Project Status
-✅ Fully Functional
-✅ Laravel 11 Ready
-✅ Google OAuth Integrated
+## Output:
 
-🎉 Your Laravel 11 Social Login with Google Project is Successfully Ready!
+### User Registration
+
+<img width="1919" height="1088" alt="Screenshot 2025-12-12 123246" src="https://github.com/user-attachments/assets/7d6bbf2e-2bf3-4623-a703-1bb6a2c49dee" />
+
+### User Login
+
+<img width="1911" height="1086" alt="Screenshot 2025-12-04 111648" src="https://github.com/user-attachments/assets/3d0569df-7f23-49ea-adf1-2a9e08eead22" />
+
+### Sign in With Google
+
+<img width="1918" height="1034" alt="Screenshot 2025-12-04 111840" src="https://github.com/user-attachments/assets/ddf4affe-dbbe-4d7c-9d7e-264d28e31651" />
+
+### User Dashboard
+
+<img width="1916" height="1083" alt="Screenshot 2025-12-04 111854" src="https://github.com/user-attachments/assets/1f498c47-79a6-47f7-b5cf-8c8d9884b933" />
+
+---
+
+Your PHP_Laravel11_SocialLogin Project is Successfully Ready!
