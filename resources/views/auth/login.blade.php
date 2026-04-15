@@ -12,7 +12,7 @@
 
 <div class="bg-white p-8 rounded shadow w-full max-w-md">
     <!-- Page Heading -->
-    <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+    <h2 class="text-2xl font-bold mb-6 text-center">Login Now</h2>
 
     <!-- Display Error Message (e.g., invalid credentials) -->
     @if(session('error'))
