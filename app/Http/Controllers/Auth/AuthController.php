@@ -64,24 +64,28 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        // Validate incoming form data
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        // Attempt login
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate(); // Prevent session fixation
+            $request->session()->regenerate();
+
+            // ✅ NEW FEATURE CODE
+            $user = Auth::user();
+            $user->update([
+                'last_login_at' => now(),
+                'provider' => 'normal'
+            ]);
+
             return redirect()->route('dashboard');
         }
 
-        // Login failed
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->withInput();
     }
-
     /**
      * Show user dashboard (protected route)
      *
