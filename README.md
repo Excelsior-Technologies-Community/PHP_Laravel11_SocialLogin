@@ -882,15 +882,20 @@ routes/
 
 ### User Login
 
-<img width="1911" height="1086" alt="Screenshot 2025-12-04 111648" src="https://github.com/user-attachments/assets/3d0569df-7f23-49ea-adf1-2a9e08eead22" />
+<img width="1908" height="914" alt="Screenshot 2026-04-17 134329" src="https://github.com/user-attachments/assets/9166c9b3-ecef-4990-a6af-1210dd07fb35" />
 
-### Sign in With Google
+
+### Sign in With Google And Twitter
 
 <img width="1918" height="1034" alt="Screenshot 2025-12-04 111840" src="https://github.com/user-attachments/assets/ddf4affe-dbbe-4d7c-9d7e-264d28e31651" />
+<img width="1912" height="899" alt="Screenshot 2026-04-17 134306" src="https://github.com/user-attachments/assets/f3663971-202f-41bb-85be-326fe5bbcc92" />
+
 
 ### User Dashboard
 
-<img width="1916" height="1083" alt="Screenshot 2025-12-04 111854" src="https://github.com/user-attachments/assets/1f498c47-79a6-47f7-b5cf-8c8d9884b933" />
+<img width="1919" height="911" alt="Screenshot 2026-04-17 134317" src="https://github.com/user-attachments/assets/7a915b50-2cf2-4f3c-9ebc-16620462131e" />
+<img width="1919" height="911" alt="Screenshot 2026-04-17 134243" src="https://github.com/user-attachments/assets/31773b94-e393-4725-b798-46b38c8819cd" />
+
 
 ---
 
