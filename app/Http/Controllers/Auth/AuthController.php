@@ -17,13 +17,13 @@ class AuthController extends Controller
      */
     public function showRegisterForm()
     {
-        return view('auth.register'); // resources/views/auth/register.blade.php
+        return view('auth.register');
     }
 
     /**
      * Handle user registration
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function register(Request $request)
@@ -32,11 +32,11 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed', // password_confirmation field required
+            'password' => 'required|min:6|confirmed', 
         ]);
 
         // Create new user
-        $user = User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -53,13 +53,13 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
-        return view('auth.login'); // resources/views/auth/login.blade.php
+        return view('auth.login');
     }
 
     /**
      * Handle user login
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function login(Request $request)
@@ -72,7 +72,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // ✅ NEW FEATURE CODE
+            // ✅ Update Login Info
             $user = Auth::user();
             $user->update([
                 'last_login_at' => now(),
@@ -86,6 +86,7 @@ class AuthController extends Controller
             'email' => 'The provided credentials do not match our records.',
         ])->withInput();
     }
+
     /**
      * Show user dashboard (protected route)
      *
@@ -93,21 +94,21 @@ class AuthController extends Controller
      */
     public function dashboard()
     {
-        return view('auth.dashboard'); // resources/views/auth/dashboard.blade.php
+        return view('auth.dashboard');
     }
 
     /**
      * Logout the user
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function logout(Request $request)
     {
         Auth::logout();
 
-        $request->session()->invalidate(); // Invalidate session
-        $request->session()->regenerateToken(); // Regenerate CSRF token
+        $request->session()->invalidate(); 
+        $request->session()->regenerateToken(); 
 
         return redirect()->route('login');
     }

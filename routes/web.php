@@ -23,9 +23,16 @@ Route::get('dashboard', [AuthController::class, 'dashboard'])
 // Logout
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
-// ======================= Google Social Login =======================
+// ======================= Social Login (Google & Twitter) =======================
+
+// --- Google Social Login ---
 // Redirect to Google
 Route::get('login/google', [SocialController::class, 'redirectToGoogle'])->name('google.login');
-
 // Google callback
-Route::get('login/google/callback', [SocialController::class, 'handleGoogleCallback'])->name('google.callback');
+Route::get('auth/callback/google', [SocialController::class, 'handleGoogleCallback'])->name('google.callback');
+
+// --- Twitter Social Login ---
+// Redirect to Twitter
+Route::get('login/twitter', [SocialController::class, 'redirectToTwitter'])->name('twitter.login');
+// Twitter callback
+Route::get('auth/twitter/callback', [SocialController::class, 'handleTwitterCallback'])->name('twitter.callback');

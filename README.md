@@ -102,6 +102,7 @@ CREATE DATABASE laravel11_social;
  Step 4: Install Laravel Socialite
 ```
 composer require laravel/socialite
+composer require doctrine/dbal
 ```
  Laravel Socialite is Laravel’s official package for OAuth authentication.
 
@@ -162,6 +163,7 @@ php artisan migrate
 
 namespace App\Models;
 
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -171,17 +173,25 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * Mass assignable fields
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'google_id', // Google OAuth ID
+        'google_id',
+        'twitter_id',  
+        'avatar',
+        'last_login_at',
+        'provider',
     ];
 
     /**
-     * Hidden fields
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -189,16 +199,19 @@ class User extends Authenticatable
     ];
 
     /**
-     * Attribute casting
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed', // Laravel 11 automatic hashing
+            'password' => 'hashed',
         ];
     }
 }
+
 
 ```
  Step 7: Setup Google OAuth Credentials
@@ -234,6 +247,12 @@ GOOGLE_CLIENT_ID=your_client_id_here
 GOOGLE_CLIENT_SECRET=your_client_secret_here
 GOOGLE_REDIRECT=http://localhost:8000/login/google/callback
 
+Twitter keys
+
+TWITTER_CLIENT_ID=your_client_id_here
+TWITTER_CLIENT_SECRET=your_client_secret_here
+TWITTER_REDIRECT_URI="http://localhost:8000/auth/twitter/callback"
+
 ```
  Step 9: Update config/services.php
 
@@ -243,6 +262,12 @@ GOOGLE_REDIRECT=http://localhost:8000/login/google/callback
     'client_id'     => env('GOOGLE_CLIENT_ID'),
     'client_secret' => env('GOOGLE_CLIENT_SECRET'),
     'redirect'      => env('GOOGLE_REDIRECT'),
+],
+
+'twitter' => [
+    'client_id' => env('TWITTER_CLIENT_ID'),
+    'client_secret' => env('TWITTER_CLIENT_SECRET'),
+    'redirect' => env('TWITTER_REDIRECT_URL'),
 ],
 
 ```
@@ -278,13 +303,13 @@ class AuthController extends Controller
      */
     public function showRegisterForm()
     {
-        return view('auth.register'); // resources/views/auth/register.blade.php
+        return view('auth.register');
     }
 
     /**
      * Handle user registration
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function register(Request $request)
@@ -293,11 +318,11 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed', // password_confirmation field required
+            'password' => 'required|min:6|confirmed', 
         ]);
 
         // Create new user
-        $user = User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -314,30 +339,35 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
-        return view('auth.login'); // resources/views/auth/login.blade.php
+        return view('auth.login');
     }
 
     /**
      * Handle user login
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function login(Request $request)
     {
-        // Validate incoming form data
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        // Attempt login
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate(); // Prevent session fixation
+            $request->session()->regenerate();
+
+            // ✅ Update Login Info
+            $user = Auth::user();
+            $user->update([
+                'last_login_at' => now(),
+                'provider' => 'normal'
+            ]);
+
             return redirect()->route('dashboard');
         }
 
-        // Login failed
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->withInput();
@@ -350,21 +380,21 @@ class AuthController extends Controller
      */
     public function dashboard()
     {
-        return view('auth.dashboard'); // resources/views/auth/dashboard.blade.php
+        return view('auth.dashboard');
     }
 
     /**
      * Logout the user
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function logout(Request $request)
     {
         Auth::logout();
 
-        $request->session()->invalidate(); // Invalidate session
-        $request->session()->regenerateToken(); // Regenerate CSRF token
+        $request->session()->invalidate(); 
+        $request->session()->regenerateToken(); 
 
         return redirect()->route('login');
     }
@@ -386,7 +416,7 @@ php artisan make:controller Auth/SocialController
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Laravel\Socialite\Facades\Socialite; // Google OAuth
+use Laravel\Socialite\Facades\Socialite; 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -394,54 +424,94 @@ use Illuminate\Support\Str;
 class SocialController extends Controller
 {
     /**
-     * Redirect the user to the Google authentication page.
-     *
-     * @return \Illuminate\Http\Response
+     * Redirect to Google's authentication page.
      */
     public function redirectToGoogle()
     {
-        // Redirect to Google's OAuth 2.0 authentication page
         return Socialite::driver('google')->redirect();
     }
 
     /**
      * Handle callback from Google after authentication.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function handleGoogleCallback()
     {
+        return $this->handleSocialLogin('google');
+    }
+
+    /**
+     * Redirect to Twitter's authentication page.
+     */
+    public function redirectToTwitter()
+    {
+        return Socialite::driver('twitter')->redirect();
+    }
+
+    /**
+     * Handle callback from Twitter after authentication.
+     */
+    public function handleTwitterCallback()
+    {
+        return $this->handleSocialLogin('twitter');
+    }
+
+    /**
+     * Common function to handle Social Login for different providers.
+     */
+    protected function handleSocialLogin($provider)
+    {
         try {
-            // Retrieve user information from Google
-            $googleUser = Socialite::driver('google')->stateless()->user();
-
-            // Check if user exists in DB either by google_id or email
-            $user = User::where('google_id', $googleUser->id)
-                        ->orWhere('email', $googleUser->getEmail())
-                        ->first();
-
-            if (!$user) {
-                // User does not exist: create new user
-                $user = User::create([
-                    'name' => $googleUser->getName(),
-                    'email' => $googleUser->getEmail(),
-                    'google_id' => $googleUser->getId(),
-                    'password' => bcrypt(Str::random(16)), // Random password for Google users
-                ]);
-            } elseif (!$user->google_id) {
-                // User exists but google_id is empty: update google_id
-                $user->update(['google_id' => $googleUser->getId()]);
+            // 🛠️ FIX 1: Twitter (OAuth 1.0) does NOT support stateless()
+            if ($provider === 'twitter') {
+                $socialUser = Socialite::driver($provider)->user();
+            } else {
+                $socialUser = Socialite::driver($provider)->stateless()->user();
             }
 
-            // Log in the user using Laravel Auth
+            $socialId = $socialUser->getId();
+            $socialEmail = $socialUser->getEmail();
+
+            // Check if user already exists in our database (by provider ID or Email)
+            $user = User::where($provider . '_id', $socialId);
+            
+            if ($socialEmail) {
+                $user->orWhere('email', $socialEmail);
+            }
+            
+            $user = $user->first();
+
+            if (!$user) {
+               
+                $finalEmail = $socialEmail ?? $socialId . '@' . $provider . '.com';
+
+                // Register a new user if not found
+                $user = User::create([
+                    'name'            => $socialUser->getName() ?? 'User_' . $socialId,
+                    'email'           => $finalEmail, 
+                    'avatar'          => $socialUser->getAvatar(), 
+                    $provider . '_id' => $socialId,
+                    'password'        => bcrypt(Str::random(16)),
+                    'provider'        => $provider,
+                    'last_login_at'   => now(),
+                ]);
+            } else {
+                // Update existing user info
+                $user->update([
+                    'avatar'          => $socialUser->getAvatar(), 
+                    $provider . '_id' => $socialId,
+                    'provider'        => $provider,
+                    'last_login_at'   => now(),
+                ]);
+            }
+
+            // Log the user into the application
             Auth::login($user, true);
 
-            // Redirect to dashboard
             return redirect()->route('dashboard');
 
         } catch (\Exception $e) {
-            // If any error occurs, redirect back to login with error message
-            return redirect()->route('login')->with('error', 'Google login failed.');
+            // Redirect back to login with actual error message for debugging
+            return redirect()->route('login')->with('error', ucfirst($provider) . ' login failed: ' . $e->getMessage());
         }
     }
 }
@@ -476,12 +546,19 @@ Route::get('dashboard', [AuthController::class, 'dashboard'])
 // Logout
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
-// ======================= Google Social Login =======================
+// ======================= Social Login (Google & Twitter) =======================
+
+// --- Google Social Login ---
 // Redirect to Google
 Route::get('login/google', [SocialController::class, 'redirectToGoogle'])->name('google.login');
-
 // Google callback
-Route::get('login/google/callback', [SocialController::class, 'handleGoogleCallback'])->name('google.callback');
+Route::get('auth/callback/google', [SocialController::class, 'handleGoogleCallback'])->name('google.callback');
+
+// --- Twitter Social Login ---
+// Redirect to Twitter
+Route::get('login/twitter', [SocialController::class, 'redirectToTwitter'])->name('twitter.login');
+// Twitter callback
+Route::get('auth/twitter/callback', [SocialController::class, 'handleTwitterCallback'])->name('twitter.callback');
 
 ```
  Step 12: Views (Tailwind CSS)
@@ -584,71 +661,71 @@ login.blade.php
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-<div class="bg-white p-8 rounded shadow w-full max-w-md">
-    <!-- Page Heading -->
-    <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+<div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border-t-4 border-blue-600">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Login Now</h2>
 
-    <!-- Display Error Message (e.g., invalid credentials) -->
     @if(session('error'))
-        <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
-            {{ session('error') }}
+        <div class="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-sm">
+            <i class="bi bi-exclamation-circle-fill me-2"></i> {{ session('error') }}
         </div>
     @endif
 
-    <!-- Display Success Message (e.g., after registration) -->
     @if(session('success'))
-        <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
-            {{ session('success') }}
+        <div class="bg-green-100 text-green-700 p-3 rounded-lg mb-4 text-sm">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
         </div>
     @endif
 
-    <!-- Normal Email/Password Login Form -->
-    <form action="{{ route('login') }}" method="POST" class="space-y-5">
-        @csrf <!-- CSRF token for security -->
+    <form action="{{ route('login') }}" method="POST" class="space-y-4">
+        @csrf
 
-        <!-- Email Input -->
         <div>
-            <label class="block text-gray-700 mb-1" for="email">Email</label>
-            <input type="email" name="email" id="email" placeholder="Enter your email"
-                   class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            <label class="block text-gray-700 text-sm font-semibold mb-1" for="email">Email Address</label>
+            <input type="email" name="email" id="email" placeholder="name@example.com"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required>
         </div>
 
-        <!-- Password Input -->
         <div>
-            <label class="block text-gray-700 mb-1" for="password">Password</label>
-            <input type="password" name="password" id="password" placeholder="Enter your password"
-                   class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            <label class="block text-gray-700 text-sm font-semibold mb-1" for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="••••••••"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required>
         </div>
 
-        <!-- Submit Button -->
         <button type="submit"
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition duration-200">
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-200">
             Login
         </button>
     </form>
 
-    <!-- OR Divider -->
-    <div class="flex items-center my-4">
-        <hr class="flex-grow border-gray-300">
-        <span class="mx-2 text-gray-500">OR</span>
-        <hr class="flex-grow border-gray-300">
+    <div class="flex items-center my-6">
+        <hr class="flex-grow border-gray-200">
+        <span class="mx-3 text-gray-400 text-sm font-medium">OR LOGIN WITH</span>
+        <hr class="flex-grow border-gray-200">
     </div>
 
-    <!-- Google Login Button -->
-    <a href="{{ route('google.login') }}" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded flex items-center justify-center gap-2">
-         Login with Google
-    </a>
+    <div class="flex flex-col gap-3">
+        
+        <a href="{{ route('google.login') }}" 
+           class="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-2 rounded-lg flex items-center justify-center gap-2 font-medium shadow-sm transition">
+            <i class="bi bi-google text-red-500"></i> Continue with Google
+        </a>
 
-    <!-- Link to Registration Page -->
-    <div class="text-center mt-5">
-        <p class="text-gray-600">
+        <a href="{{ route('twitter.login') }}" 
+           class="w-full bg-sky-500 hover:bg-sky-600 text-white py-2 rounded-lg flex items-center justify-center gap-2 font-medium shadow-sm transition">
+            <i class="bi bi-twitter"></i> Continue with Twitter
+        </a>
+
+    </div>
+
+    <div class="text-center mt-8 pt-4 border-t border-gray-100">
+        <p class="text-gray-600 text-sm">
             Don't have an account? 
-            <a href="{{ route('register') }}" class="text-blue-600 hover:underline">Register here</a>
+            <a href="{{ route('register') }}" class="text-blue-600 font-bold hover:underline">Register here</a>
         </p>
     </div>
 </div>
@@ -665,49 +742,93 @@ dashboard.blade.php
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <!-- Tailwind CSS CDN for styling -->
+
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
+
 <body class="bg-gray-100 min-h-screen flex flex-col">
 
-<!-- ============================= -->
-<!-- Navbar Section -->
-<!-- ============================= -->
 <nav class="bg-white shadow px-6 py-4 flex justify-between items-center">
-    <!-- Dashboard Title -->
-    <h1 class="text-xl font-bold text-gray-800">Dashboard</h1>
+    
+    <h1 class="text-xl font-bold text-gray-800">
+        Dashboard
+    </h1>
 
-    <!-- Logout Button -->
-    <a href="{{ route('logout') }}"
-       class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition duration-200">
-        Logout
-    </a>
+    <div class="flex items-center gap-4">
+        @if(Auth::user()->avatar)
+            <img src="{{ Auth::user()->avatar }}" alt="Profile" class="w-8 h-8 rounded-full shadow-sm border border-gray-200">
+        @endif
+        
+        <a href="{{ route('logout') }}"
+           class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition">
+            Logout
+        </a>
+    </div>
+
 </nav>
 
-<!-- ============================= -->
-<!-- Main Content Section -->
-<!-- ============================= -->
 <div class="flex-grow flex items-center justify-center">
-    <!-- Card Container -->
-    <div class="bg-white shadow-lg rounded-lg w-full max-w-lg p-8 text-center">
-        <!-- Welcome Message -->
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
-            Welcome, {{ Auth::user()->name }}!
+
+    <div class="bg-white shadow-lg rounded-xl w-full max-w-lg p-8 text-center border-t-4 border-blue-500">
+
+        <div class="mb-6 flex justify-center">
+            @if(Auth::user()->avatar)
+                <img src="{{ Auth::user()->avatar }}" alt="User Photo" 
+                     class="w-24 h-24 rounded-full border-4 border-blue-100 shadow-md object-cover">
+            @else
+                <div class="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center text-white shadow-md">
+                    <i class="bi bi-person-fill text-5xl"></i>
+                </div>
+            @endif
+        </div>
+
+        <h2 class="text-2xl font-semibold text-gray-800 mb-2">
+            Welcome, {{ Auth::user()->name }} 👋
         </h2>
 
-        <!-- Display login method -->
-        <p class="text-gray-600 mb-6">
-            You are successfully logged in using 
-            {{ Auth::user()->google_id ? 'Google' : 'normal credentials' }}.
+        <p class="text-gray-500 mb-4">
+            {{ Auth::user()->email }}
         </p>
+
+        <hr class="my-4 border-gray-100">
+
+        <p class="text-gray-700 mb-2">
+            Login Method:
+            <span class="font-semibold text-blue-600 capitalize">
+                {{ Auth::user()->provider ?? 'normal' }}
+            </span>
+        </p>
+
+        <p class="text-gray-700 mb-4">
+            Last Login:
+            <span class="font-semibold text-green-600">
+                {{ Auth::user()->last_login_at ? \Carbon\Carbon::parse(Auth::user()->last_login_at)->format('d M Y, h:i A') : 'First Login' }}
+            </span>
+        </p>
+
+        <div class="mt-4 flex justify-center gap-2">
+            @if(Auth::user()->google_id)
+                <span class="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    <i class="bi bi-google me-1"></i> Google User
+                </span>
+            @elseif(Auth::user()->twitter_id)
+                <span class="inline-block bg-sky-100 text-sky-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    <i class="bi bi-twitter me-1"></i> Twitter User
+                </span>
+            @else
+                <span class="inline-block bg-gray-200 text-gray-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    <i class="bi bi-person me-1"></i> Normal User
+                </span>
+            @endif
+        </div>
+
     </div>
+
 </div>
 
-<!-- ============================= -->
-<!-- Footer Section -->
-<!-- ============================= -->
-<footer class="bg-white shadow py-4 text-center text-gray-500">
-    &copy; {{ date('Y') }} Your Company. All rights reserved.
+<footer class="bg-white shadow py-4 text-center text-gray-500 mt-auto">
+    © {{ date('Y') }} Laravel Social Login. All rights reserved.
 </footer>
 
 </body>
